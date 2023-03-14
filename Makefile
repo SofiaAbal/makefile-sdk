@@ -2,7 +2,7 @@
 #PREFIX=$(TOOLCHAIN)/arm-none-eabi-
 PREFIX=arm-none-eabi-
 ARCHFLAGS=-mthumb -mcpu=cortex-m0plus
-CFLAGS=-DCPU_MKL46Z128VLH4 -I./drivers/ -I./includes/ -g3 -O2 -Wall -Werror
+CFLAGS=-DCPU_MKL46Z128VLH4 -I./drivers/hello -I./drivers/led -I./includes/ -g3 -O2 -Wall -Werror
 LDFLAGS=--specs=nano.specs -Wl,--gc-sections,-Map,$(TARGET_HEL).map,-Tlink.ld
 
 CC=$(PREFIX)gcc
@@ -14,10 +14,10 @@ RM=rm -f
 TARGET_HEL=hello_world
 TARGET_LED=led_blinky
 
-SRC_HEL:=$(wildcard drivers/*.c hello_world.c)
+SRC_HEL:=$(wildcard drivers/hello/*.c hello_world.c)
 OBJ_HEL=$(patsubst %.c, %.o, $(SRC_HEL))
 
-SRC_LED:=$(wildcard drivers/*.c led_blinky.c)
+SRC_LED:=$(wildcard drivers/led/*.c led_blinky.c)
 OBJ_LED=$(patsubst %.c, %.o, $(SRC_LED))
 
 all: build_hel build_led size
@@ -34,12 +34,6 @@ bin_led: $(TARGET_LED).bin
 
 clean:
 	$(RM) $(TARGET_HEL).srec $(TARGET_HEL).elf $(TARGET_HEL).bin $(TARGET_HEL).map $(OBJ_HEL) $(TARGET_LED).srec $(TARGET_LED).elf $(TARGET_LED).bin $(TARGET_LED).map $(OBJ_LED)
-
-clean_hel:
-	$(RM) $(TARGET_HEL).srec $(TARGET_HEL).elf $(TARGET_HEL).bin $(TARGET_HEL).map $(OBJ_HEL)
-
-clean_led:
-	$(RM) $(TARGET_LED).srec $(TARGET_LED).elf $(TARGET_LED).bin $(TARGET_LED).map $(OBJ_LED)
 
 %.o: %.c
 	$(CC) -c $(ARCHFLAGS) $(CFLAGS) -o $@ $<
